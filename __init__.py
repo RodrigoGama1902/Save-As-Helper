@@ -1,5 +1,5 @@
 # "Save As Helper" Blender Addon.
-# Copyright (C) 2021, Rodrigo Gama, Kuimi 3D
+# Copyright (C) 2021, Rodrigo Gama
 #
 # ##### BEGIN GPL LICENSE BLOCK #####
 #
@@ -22,11 +22,11 @@
 bl_info = {
     "name": "Save As Helper",
     "description": "A simply way to save duplicate and backup files",
-    "doc_url": "https://help.kuimi3d.com/docs/save-as-helper/",
-    "tracker_url": "https://kuimi3d.com/contact/",
+    "doc_url": "https://help.cgoutset.com/docs/save-as-helper/",
+    "tracker_url": "https://help.cgoutset.com/bug-report/",
     "author": "Rodrigo Gama",
-    "version": (1, 2),
-    "blender": (2, 93, 0),
+    "version": (1, 2, 1),
+    "blender": (3, 1, 0),
     "location": "View3D",
     "category": "3D View"}
 
