@@ -1,10 +1,10 @@
 import bpy
 
-from .fastsavebackup import Fast_Save_Backup_SaveAsHelper 
+from .save_duplicate import Fast_Save_Backup_prefs 
 
 
 classes = (
-    Fast_Save_Backup_SaveAsHelper,
+    Fast_Save_Backup_prefs,
 )
 
 

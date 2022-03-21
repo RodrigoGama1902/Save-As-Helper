@@ -25,7 +25,7 @@ bl_info = {
     "doc_url": "https://help.cgoutset.com/docs/save-as-helper/",
     "tracker_url": "https://help.cgoutset.com/bug-report/",
     "author": "Rodrigo Gama",
-    "version": (1, 2, 1),
+    "version": (1, 2, 2),
     "blender": (3, 1, 0),
     "location": "View3D",
     "category": "3D View"}
