@@ -1,5 +1,5 @@
 # "Save As Helper" Blender Addon.
-# Copyright (C) 2021, Rodrigo Gama
+# Copyright (C) 2022, Rodrigo Gama
 #
 # ##### BEGIN GPL LICENSE BLOCK #####
 #
