@@ -1,11 +1,12 @@
 import bpy
 import os
-from ..addon_prefs.utility import addon_name, get_prefs
 
-class Fast_Save_Backup_prefs(bpy.types.Operator):
-    """Create a new file in the same directory with a number added in the end of the file name"""
+from ..addon_prefs.utility import get_prefs
 
-    bl_idname = "sah.fastsavebackup"
+class SAH_OP_SaveAsDuplicate(bpy.types.Operator):
+    """Save a Duplicate File"""
+
+    bl_idname = "sah.saveduplicatefile"
     bl_label = "Save As Duplicate File"
     bl_options = {'REGISTER', 'UNDO'}
     
@@ -40,6 +41,7 @@ class Fast_Save_Backup_prefs(bpy.types.Operator):
         self.report({'INFO'},
                                 "Duplicate file saved")
         return {'FINISHED'}
+    
     
     def _simple_save_duplicate(self, context):
         

@@ -9,7 +9,7 @@ def register_keymap():
     kc = addon_keyconfig
 
     km = kc.keymaps.new(name="3D View", space_type="VIEW_3D")
-    kmi = km.keymap_items.new("sah.fastsavebackup", "S", "PRESS", ctrl=True, alt=True)
+    kmi = km.keymap_items.new("sah.saveduplicatefile", "S", "PRESS", ctrl=True, alt=True)
     
     keys.append((km, kmi))
 

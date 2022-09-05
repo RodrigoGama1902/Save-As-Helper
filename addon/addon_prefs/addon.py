@@ -6,10 +6,8 @@ from .utility import addon_name, get_prefs
 
 from .preferences_prop import SAH_Preferences_Props
 
-from bpy.props import (IntProperty,
-                       BoolProperty,
-                       StringProperty,
-                       CollectionProperty)
+from bpy.props import (IntProperty,)
+
 
 
 class SAH_Prefs(bpy.types.AddonPreferences):    
@@ -18,7 +16,6 @@ class SAH_Prefs(bpy.types.AddonPreferences):
     # Property Groups
     addon_prefs: PointerProperty(type=SAH_Preferences_Props)
     
-
     def draw(self, context):
 
         prefs = get_prefs()

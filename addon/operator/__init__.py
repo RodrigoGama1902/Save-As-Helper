@@ -1,10 +1,10 @@
 import bpy
 
-from .save_duplicate import Fast_Save_Backup_prefs 
+from .save_duplicate import SAH_OP_SaveAsDuplicate 
 
 
 classes = (
-    Fast_Save_Backup_prefs,
+    SAH_OP_SaveAsDuplicate,
 )
 
 
@@ -12,9 +12,6 @@ def register_operators():
     from bpy.utils import register_class
     for cls in classes:
         register_class(cls)
-
-        
-
 
 def unregister_operators():
     from bpy.utils import unregister_class
