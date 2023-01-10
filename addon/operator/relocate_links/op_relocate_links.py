@@ -7,28 +7,34 @@ from ...utils.addon import get_props
 
 from bpy_extras.io_utils import ImportHelper
 
+# TODO Do not allow duplicate link files
+# TODO This relocate links operator should run recursively, so source link files with links should be changed too
+# TODO Implement possibility to also relocate textures of source links, so everything will be in the same folder
+
 class SAH_OP_RelocateLinks(bpy.types.Operator, ImportHelper):
     """Relocate Resources"""
 
     bl_idname = "sah.relocate_links"
     bl_label = "SAH Relocate Links"
     bl_options = {'REGISTER', 'UNDO'}
+        
+    deep_save_as : bpy.props.BoolProperty(name="Deep Save As", default=True, description = "Instead of just copying link source files, each source file will be opened and saved in the new location, automatically updating relative links") # type:ignore
+    do_not_duplicate : bpy.props.BoolProperty(name = "Dot Not Create Duplicates", default = True, description="Do not create duplicate link files from same source link, when necessary, different data-block types with same reference will have only one link file created") # type:ignore
     
-    textures : bpy.props.BoolProperty(name="Textures", default=True) # type:ignore
-    links : bpy.props.BoolProperty(name="Links", default=True) # type:ignore
+    directory : bpy.props.StringProperty() # type:ignore
     
-    copy : bpy.props.BoolProperty(name="Copy", default=True) # type:ignore
-    deep_save_as : bpy.props.BoolProperty(name="Deep Save As", default=True) # type:ignore
-    
-    directory : bpy.props.StringProperty() # type:ignore 
+    def draw(self, context):
+        layout = self.layout
+        layout.prop(self, "deep_save_as")  
+        layout.prop(self, "do_not_duplicate") 
     
     def save_simple_copy(self, old_path, new_path):
         '''Simply copy source file to another location'''
-                                
-        if self.copy:
-            shutil.copyfile(old_path, new_path)
-            
-    def save_deep_save_as(self, old_path, new_path):
+        
+        shutil.copyfile(old_path, new_path)
+    
+    @staticmethod
+    def save_deep_save_as(old_path, new_path):
         '''Open and save the file to the new location'''
         
         python_generator_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "generator_deep_save_as.py")
@@ -53,37 +59,43 @@ class SAH_OP_RelocateLinks(bpy.types.Operator, ImportHelper):
         
         print("Searching for " + data_block + " links...")
                 
-        folder_link_directory = os.path.join(self.directory, "links", data_block) 
-        data_collection = getattr(bpy.data, data_block, None)
-
-        if not data_collection:
-            return False
+        folder_link_directory = os.path.join(self.link_directory, data_block) 
         
-        for data in data_collection:
+        for data in getattr(bpy.data, data_block, []):
             
-            if data.library:
-                
-                print(" Found link: " + data.name + " in " + data.library.filepath)
-                
-                if not os.path.exists(folder_link_directory):
-                    os.makedirs(folder_link_directory)
-                
-                if not os.path.exists(data.library.filepath):
+            if not data.library:
+                continue
+            
+            old_path = data.library.filepath
+            
+            print(" Found link: " + data.name + " in " + old_path)
+            
+            if self.do_not_duplicate:
+                if old_path.startswith(self.link_directory):
+                    print("     Link already relocated, skipping...")
                     continue
+            
+            if not os.path.exists(folder_link_directory):
+                os.makedirs(folder_link_directory)
+            
+            if not os.path.exists(data.library.filepath):
+                print("     Source file does not exist: " + data.library.filepath)
+                continue
+            
+            old_path = data.library.filepath
+            new_path = os.path.join(folder_link_directory, os.path.basename(data.library.filepath))
+            
+            if self.deep_save_as:
+                self.save_deep_save_as(old_path, new_path)
+            else:
+                self.save_simple_copy(old_path, new_path)
                 
-                new_path = os.path.join(folder_link_directory, os.path.basename(data.library.filepath))
-                old_path = data.library.filepath
-                
-                if self.deep_save_as:
-                    self.save_deep_save_as(old_path, new_path)
-                else:
-                    self.save_simple_copy(old_path, new_path)
-                    
-                data.library.filepath = new_path
+            data.library.filepath = new_path            
          
     def execute(self, context):
         
         props = get_props()
+        self.link_directory = os.path.join(self.directory, "links")
         
         if not os.path.exists(self.directory):
             self.report({'ERROR'}, "Directory does not exist")
