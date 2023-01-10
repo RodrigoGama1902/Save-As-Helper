@@ -1,7 +1,7 @@
 import bpy
 import os
 
-from ..addon_prefs.utility import get_prefs
+from ...addon_prefs.utility import get_prefs
 
 class SAH_OP_SaveAsDuplicate(bpy.types.Operator):
     """Save a Duplicate File"""
@@ -41,8 +41,8 @@ class SAH_OP_SaveAsDuplicate(bpy.types.Operator):
         self.report({'INFO'},
                                 "Duplicate file saved")
         return {'FINISHED'}
-    
-    
+
+
     def _simple_save_duplicate(self, context):
         
         directory = os.path.dirname(bpy.data.filepath)
@@ -114,7 +114,7 @@ class SAH_OP_SaveAsDuplicate(bpy.types.Operator):
         
         return os.path.join(folder_path,name + ".blend")
     
-
+    
     def _save_on_external_folder(self, context):
         
         props = context.scene.sahelper

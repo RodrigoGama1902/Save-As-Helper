@@ -1,6 +1,6 @@
 
-from .save_duplicate import SAH_OP_SaveAsDuplicate 
-from .relocate_links import SAH_OP_RelocateLinks
+from .save_duplicate.op_save_duplicate import SAH_OP_SaveAsDuplicate 
+from .relocate_links.op_relocate_links import SAH_OP_RelocateLinks
 
 classes = (
     SAH_OP_SaveAsDuplicate, SAH_OP_RelocateLinks
