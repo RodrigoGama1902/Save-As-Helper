@@ -56,12 +56,10 @@ class SAH_OP_SaveAsDuplicate(bpy.types.Operator):
         if to_check.isdigit():
             
             num_final = self._get_duplicate_number(filename)
-
-            # Name without Digit            
+         
             n_index = len(filename) - len(num_final)      
             name_nd = filename[:n_index]
 
-            # New Num
             new_num = int(num_final)+ 1
             
             if prefs.add_separator:
@@ -176,6 +174,8 @@ class SAH_OP_SaveAsDuplicate(bpy.types.Operator):
             return name[0:-6]
         if name.endswith(".blend1"):   
             return name[0:-7]
+        
+        return name
             
 
     

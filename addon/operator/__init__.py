@@ -1,10 +1,9 @@
-import bpy
 
 from .save_duplicate import SAH_OP_SaveAsDuplicate 
-
+from .relocate_links import SAH_OP_RelocateLinks
 
 classes = (
-    SAH_OP_SaveAsDuplicate,
+    SAH_OP_SaveAsDuplicate, SAH_OP_RelocateLinks
 )
 
 

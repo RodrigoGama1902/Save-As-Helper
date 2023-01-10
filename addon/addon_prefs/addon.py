@@ -1,20 +1,15 @@
 import bpy
 
 from bpy.props import PointerProperty
-
 from .utility import addon_name, get_prefs
-
 from .preferences_prop import SAH_Preferences_Props
-
 from bpy.props import (IntProperty,)
-
 
 
 class SAH_Prefs(bpy.types.AddonPreferences):    
     bl_idname = addon_name
 
-    # Property Groups
-    addon_prefs: PointerProperty(type=SAH_Preferences_Props)
+    addon_prefs: PointerProperty(type=SAH_Preferences_Props) #type:ignore
     
     def draw(self, context):
 
@@ -46,7 +41,7 @@ class SAH_Prefs(bpy.types.AddonPreferences):
 
 class SAH_Addon_Props(bpy.types.PropertyGroup):
     
-    current_index: IntProperty(default=0)
+    current_index: IntProperty(default=0) #type:ignore
 
 
 
