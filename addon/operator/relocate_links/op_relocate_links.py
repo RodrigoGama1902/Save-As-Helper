@@ -37,6 +37,8 @@ class SAH_OP_RelocateLinks(bpy.types.Operator, ImportHelper):
     def save_deep_save_as(self, old_path, new_path):
         '''Open and save the file to the new location'''
         
+        print("     Running deep save on: " + old_path)
+        
         python_generator_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "generator_deep_save_as.py")
         
         cmd = [
@@ -54,8 +56,10 @@ class SAH_OP_RelocateLinks(bpy.types.Operator, ImportHelper):
         p = subprocess.Popen(cmd, universal_newlines=True,shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                                     
         for line in iter(p.stdout.readline,''): # type: ignore   
-            if line.startswith("Info: Saved"):
-                print("     Saved: " + new_path)
+            #if line.startswith("Info: Saved"):
+            #    print("     Saved: " + new_path)
+            
+            print(line, end='')
     
     def relocate_links(self, data_block):
         
@@ -84,8 +88,8 @@ class SAH_OP_RelocateLinks(bpy.types.Operator, ImportHelper):
                 print("     Source file does not exist: " + data.library.filepath)
                 continue
             
-            new_path = os.path.join(folder_link_directory, os.path.basename(data.library.filepath))
-            
+            new_path = os.path.join(folder_link_directory, os.path.basename(original_path))
+                        
             if self.deep_save_as:
                 self.save_deep_save_as(original_path, new_path)
             else:
