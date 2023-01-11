@@ -94,7 +94,11 @@ class SAH_OP_RelocateLinks(bpy.types.Operator, ImportHelper):
                 self.save_deep_save_as(original_path, new_path)
             else:
                 self.save_simple_copy(original_path, new_path)
-                
+            
+            # checking if convert to relative is necessary  
+            if data.library.filepath.startswith("//"):
+                new_path = bpy.path.relpath(new_path)
+                            
             data.library.filepath = new_path            
          
     def execute(self, context):

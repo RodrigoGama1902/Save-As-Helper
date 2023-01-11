@@ -28,7 +28,8 @@ bl_info = {
     "version": (1, 3, 1),
     "blender": (3, 3, 0),
     "location": "View3D",
-    "category": "3D View"}
+    "category": "3D View"
+    }
 
 
 def register():

@@ -53,6 +53,10 @@ class SAH_OP_RelocateImages(bpy.types.Operator, ImportHelper):
                 print("Error: " + str(e))
                 continue
             
+            if image.filepath.startswith("//"):
+                print("Converting to relative path")
+                new_path = bpy.path.relpath(new_path)
+            
             image.filepath = new_path
 
         return {'FINISHED'}
