@@ -67,14 +67,14 @@ class SAH_OP_RelocateLinks(bpy.types.Operator, ImportHelper):
                 
         folder_link_directory = os.path.join(self.link_directory, data_block) 
         
-        for data in getattr(bpy.data, data_block, []):
+        for librarie in bpy.data.libraries:
             
-            if not data.library:
+            if not librarie:
                 continue
             
-            original_path = convert_to_absolute(data.library.filepath)
+            original_path = convert_to_absolute(librarie.filepath)
             
-            print(" Found link: " + data.name + " in " + original_path)
+            print(" Found link: " + librarie.name + " in " + original_path)
             
             if self.do_not_duplicate:
                 if original_path.startswith(self.link_directory):
@@ -89,7 +89,7 @@ class SAH_OP_RelocateLinks(bpy.types.Operator, ImportHelper):
                 os.makedirs(folder_link_directory)
             
             if not os.path.exists(original_path):
-                print("     Source file does not exist: " + data.library.filepath)
+                print("     Source file does not exist: " + librarie.filepath)
                 continue
             
             new_path = os.path.join(folder_link_directory, os.path.basename(original_path))
@@ -100,10 +100,10 @@ class SAH_OP_RelocateLinks(bpy.types.Operator, ImportHelper):
                 self.save_simple_copy(original_path, new_path)
             
             # checking if convert to relative is necessary  
-            if data.library.filepath.startswith("//"):
+            if librarie.filepath.startswith("//"):
                 new_path = bpy.path.relpath(new_path)
                             
-            data.library.filepath = new_path            
+            librarie.filepath = new_path            
          
     def execute(self, context):
         
@@ -116,11 +116,11 @@ class SAH_OP_RelocateLinks(bpy.types.Operator, ImportHelper):
         
         print("\nRelocating Links...\n")
         
-        for data_block in props.data_blocks.__annotations__:
-            if getattr(props.data_blocks, data_block) == False:
-                continue
+        #for data_block in props.data_blocks.__annotations__:
+        #    if getattr(props.data_blocks, data_block) == False:
+        #        continue
         
-            self.relocate_links(data_block)
+        self.relocate_links("libraries")
             
         return {'FINISHED'}
 
