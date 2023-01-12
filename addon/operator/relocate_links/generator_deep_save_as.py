@@ -33,7 +33,7 @@ if relocate_images:
 # Run relocate link operator inside the current source link file
 bpy.ops.sah.relocate_links(directory = relocate_directory)
 
-#bpy.ops.file.make_paths_relative()
+bpy.ops.file.make_paths_relative()
 
 bpy.ops.wm.save_as_mainfile(filepath = save_path, copy=True)
 

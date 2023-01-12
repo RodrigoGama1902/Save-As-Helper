@@ -17,7 +17,6 @@ class SAH_OP_RelocateLinks(bpy.types.Operator, ImportHelper):
     bl_label = "SAH Relocate Links"
     bl_options = {'REGISTER', 'UNDO'}
         
-    deep_save_as : bpy.props.BoolProperty(name="Deep Save As", default=True, description = "Instead of just copying link source files, each source file will be opened and saved in the new location, automatically updating relative links") # type:ignore
     do_not_duplicate : bpy.props.BoolProperty(name = "Dot Not Create Duplicates", default = True, description="Do not create duplicate link files from same source link, when necessary, different data-block types with same reference will have only one link file created") # type:ignore
     relocate_link_images : bpy.props.BoolProperty(name = "Relocate Link Images", default = True, description="Relocate images linked to the file") # type:ignore
     
@@ -25,15 +24,9 @@ class SAH_OP_RelocateLinks(bpy.types.Operator, ImportHelper):
     
     def draw(self, context):
         layout = self.layout
-        layout.prop(self, "deep_save_as")  
         layout.prop(self, "do_not_duplicate") 
         layout.prop(self, "relocate_link_images")
-    
-    def save_simple_copy(self, old_path, new_path):
-        '''Simply copy source file to another location'''
         
-        shutil.copyfile(old_path, new_path)
-    
     def save_deep_save_as(self, old_path, new_path):
         '''Open and save the file to the new location'''
         
@@ -55,72 +48,56 @@ class SAH_OP_RelocateLinks(bpy.types.Operator, ImportHelper):
    
         p = subprocess.Popen(cmd, universal_newlines=True,shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                                     
-        for line in iter(p.stdout.readline,''): # type: ignore   
-            #if line.startswith("Info: Saved"):
-            #    print("     Saved: " + new_path)
-            
-            print(line, end='')
-    
-    def relocate_links(self, data_block):
-        
-        print("Searching for " + data_block + " links...")
+        for line in iter(p.stdout.readline,''): # type: ignore 
+            #print(line, end='')             
+            if line.startswith("Info: Saved"):
+                print("     Saved: " + new_path)   
                 
-        folder_link_directory = os.path.join(self.link_directory, data_block) 
+    
+    def relocate_library(self, librarie):
         
-        for librarie in bpy.data.libraries:
-            
-            if not librarie:
-                continue
-            
-            original_path = convert_to_absolute(librarie.filepath)
-            
-            print(" Found link: " + librarie.name + " in " + original_path)
-            
-            if self.do_not_duplicate:
-                if original_path.startswith(self.link_directory):
+        print(f"\nRelocating {librarie.name}\n")
+                
+        if not librarie:
+            return False
+        
+        if not os.path.exists(self.link_directory):
+            os.mkdir(self.link_directory)
+        
+        original_path = convert_to_absolute(librarie.filepath)
+        
+        print(" Found link: " + librarie.name + " in " + original_path)
+        
+        if self.do_not_duplicate:
+            if original_path.startswith(self.link_directory):  
+                print("     Link already relocated, skipping...")                    
+                return False
                     
-                    print("     Link already relocated, skipping...")
-                    print("     Link Directory: " + self.link_directory)
-                    print("     Original Path: " + original_path)
-                    
-                    continue
-            
-            if not os.path.exists(folder_link_directory):
-                os.makedirs(folder_link_directory)
-            
-            if not os.path.exists(original_path):
-                print("     Source file does not exist: " + librarie.filepath)
-                continue
-            
-            new_path = os.path.join(folder_link_directory, os.path.basename(original_path))
+        if not os.path.exists(original_path):
+            print("     Source file does not exist: " + librarie.filepath)
+            return False
+        
+        new_path = os.path.join(self.link_directory, os.path.basename(original_path))
+
+        self.save_deep_save_as(original_path, new_path)
+
+        if librarie.filepath.startswith("//"):
+            new_path = bpy.path.relpath(new_path)
                         
-            if self.deep_save_as:
-                self.save_deep_save_as(original_path, new_path)
-            else:
-                self.save_simple_copy(original_path, new_path)
-            
-            # checking if convert to relative is necessary  
-            if librarie.filepath.startswith("//"):
-                new_path = bpy.path.relpath(new_path)
-                            
-            librarie.filepath = new_path            
+        librarie.filepath = new_path    
+        
+        return True        
          
     def execute(self, context):
         
-        props = get_props()
         self.link_directory = os.path.join(self.directory, "links")
         
         if not os.path.exists(self.directory):
             self.report({'ERROR'}, "Directory does not exist")
             return {'CANCELLED'}
         
-        print("\nRelocating Links...\n")
-        
-        #for data_block in props.data_blocks.__annotations__:
-        #    if getattr(props.data_blocks, data_block) == False:
-        #        continue
-        
-        self.relocate_links("libraries")
+        for librarie in bpy.data.libraries:       
+            self.relocate_library(librarie)
             
         return {'FINISHED'}
 
