@@ -78,7 +78,11 @@ class SAH_OP_RelocateLinks(bpy.types.Operator, ImportHelper):
             
             if self.do_not_duplicate:
                 if original_path.startswith(self.link_directory):
+                    
                     print("     Link already relocated, skipping...")
+                    print("     Link Directory: " + self.link_directory)
+                    print("     Original Path: " + original_path)
+                    
                     continue
             
             if not os.path.exists(folder_link_directory):
